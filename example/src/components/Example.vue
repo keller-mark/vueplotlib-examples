@@ -54,7 +54,10 @@ export default {
     };
   },
   created() {
-    // Initialize the data
+    /* 
+      Initialize the data
+    */
+    // Example of passing a promise that returns an array to the DataContainer constructor:
     this.plotData["cars"] = new DataContainer(
       "cars",
       "Cars",
@@ -63,19 +66,31 @@ export default {
       })
     );
     
-    // Initialize the scales
+    /* 
+      Initialize the scales
+    */
+    // Example of passing an array to the ContinuousScale constructor:
     this.plotScales["Cylinders"] = new ContinuousScale(
       "Cylinders",
       "Number of Cylinders",
       [2, 9]
     );
+
+    // Example of passing a promise that returns an array to the ContinuousScale constructor:
     this.plotScales["Horsepower"] = new ContinuousScale(
       "Horsepower",
       "Horsepower",
-      [0, 250]
+      fetch('https://vega.github.io/vega-datasets/data/cars.json', {mode: 'cors'}).then((response) => {
+          return response.json();
+      }).then((data) => {
+        let values = data.map(el => el["Horsepower"]);
+        return [Math.min(...values), Math.max(...values)];
+      })
     );
 
-    // Initialize the history stack
+    /* 
+      Initialize the history stack
+    */
     this.plotStack = new HistoryStack(
       {
         [EVENT_TYPES.SCALE]: this.getScale,

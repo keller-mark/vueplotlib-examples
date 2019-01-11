@@ -17,7 +17,10 @@ export default {
     Example
   },
   created() {
-    // Initialize the data
+    /* 
+      Initialize the data
+    */
+    // Example of passing a promise that returns an array to the DataContainer constructor:
     const carsData = new DataContainer(
       "cars",
       "Cars",
@@ -27,7 +30,10 @@ export default {
     );
     this.setData({ key: "cars", data: carsData });
     
-    // Initialize the scales
+    /* 
+      Initialize the scales
+    */
+    // Example of passing an array to the ContinuousScale constructor:
     const cylindersScale = new ContinuousScale(
       "Cylinders",
       "Number of Cylinders",
@@ -35,14 +41,22 @@ export default {
     );
     this.setScale({ key: "Cylinders", scale: cylindersScale });
 
+    // Example of passing a promise that returns an array to the ContinuousScale constructor:
     const horsepowerScale = new ContinuousScale(
       "Horsepower",
       "Horsepower",
-      [0, 250]
+      fetch('https://vega.github.io/vega-datasets/data/cars.json', {mode: 'cors'}).then((response) => {
+          return response.json();
+      }).then((data) => {
+        let values = data.map(el => el["Horsepower"]);
+        return [Math.min(...values), Math.max(...values)];
+      })
     );
     this.setScale({ key: "Horsepower", scale: horsepowerScale });
 
-    // Initialize the history stack
+    /* 
+      Initialize the history stack
+    */
     const stack = new HistoryStack(
       {
         [EVENT_TYPES.SCALE]: this.getScale,
